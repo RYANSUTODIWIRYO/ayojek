@@ -1,19 +1,25 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native'
+import React, { Component } from 'react'
+import { LoginStack } from "./navigator"
+import { createStackNavigator } from "@react-navigation/stack"
+import { NavigationContainer } from "@react-navigation/native"
+
+const Stack = createStackNavigator()
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {  }
-  }
   render() { 
     return (
-      <View>
-        <Text>
-          Ini App
-        </Text>
-      </View>
-    );
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="LoginStack"
+            children={props => <LoginStack {...props}/>}
+            options={{
+              headerShown: false
+            }}  
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    )
   }
 }
  
