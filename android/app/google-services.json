@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "343088287868",
+    "firebase_url": "https://ayojek-g2academy.firebaseio.com",
+    "project_id": "ayojek-g2academy",
+    "storage_bucket": "ayojek-g2academy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343088287868:android:c87fa0712fd862bd6739f9",
+        "android_client_info": {
+          "package_name": "com.ayojek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "343088287868-r1src6siea2nubnllt9n1ss61rdca7td.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvJ2dbTv2XSyG0n7rLwk9V55HPNGNnQOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343088287868-r1src6siea2nubnllt9n1ss61rdca7td.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
