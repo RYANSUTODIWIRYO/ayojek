@@ -20,7 +20,7 @@ class LoginStack extends Component {
                 />
                 <Stack.Screen
                     name="LoginForm"
-                    children={props => <LoginForm {...props}/>}
+                    children={props => <LoginForm {...props} setLogin={this.props.setLogin}/>}
                     options={{
                         headerTitle:""
                     }}

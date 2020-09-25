@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert
 } from 'react-native';
 
 export default class LoginForm extends Component {
@@ -25,6 +26,7 @@ export default class LoginForm extends Component {
     const confirmation = await auth().signInWithPhoneNumber(this.state.phone)
       .catch(error => {
         console.log('Error Login: ', error)
+        Alert.alert("Failed to login")
       })
 
     console.log("confirmation: ", confirmation )
@@ -33,6 +35,7 @@ export default class LoginForm extends Component {
     })
   }
 
+  // Pressed after user insert code number
   onPressConfirmCode = async () => {
     const { code, confirmation } = this.state
     try {
@@ -43,6 +46,27 @@ export default class LoginForm extends Component {
     }
   }
 
+  // Check this.state.confirmation is changed or not
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.confirmation !== prevState.confirmation) {
+      // console.log('masuuuuuuuuuuuukkkkkkkkkkkkkkkkkkkkkk')
+      this.getUser()
+    }
+  }
+
+  // Get user information from firebase
+  getUser = () =>  {   
+    auth().onAuthStateChanged(user => {
+        if(user) {
+          console.log("get user: ", user)
+          return this.props.setLogin()
+        }
+      }
+    )
+  }
+
+
+  // Form is showed after user press "masuk"
   LoginFormNumber = () => (
     <View style={{padding: 20, backgroundColor: 'white'}}>
         {/* TITLE */}
