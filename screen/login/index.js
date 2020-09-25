@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
-import { ceil } from 'react-native-reanimated'
 
 class Login extends Component { 
     // Navigate to Login Form
@@ -75,9 +74,6 @@ const styles = StyleSheet.create({
     buttonContainer: {flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 20},
     button: {width: 180, height: 35, backgroundColor: "#00aa13", borderRadius: 25, alignItems: "center", justifyContent: "center"},
     buttonText: {color: "white", fontWeight: "bold", fontSize: 15}
-
 })
-
-
  
 export default Login

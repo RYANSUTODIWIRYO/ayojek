@@ -22,14 +22,14 @@ class LoginStack extends Component {
                     name="LoginForm"
                     children={props => <LoginForm {...props}/>}
                     options={{
-                        headerTitle:"LoginForm"
+                        headerTitle:""
                     }}
                 />
                 <Stack.Screen
                     name="RegisterForm"
                     children={props => <RegisterForm {...props}/>}
                     options={{
-                        headerTitle:"RegisterForm"
+                        headerTitle:""
                     }}
                 />
             </Stack.Navigator>
