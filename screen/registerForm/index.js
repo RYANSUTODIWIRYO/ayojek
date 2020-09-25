@@ -194,6 +194,8 @@ export default class RegisterForm extends Component {
   };
 
   render() {
+    const { confirmation } = this.state
+    
     if (!confirmation) {
       return this.RegisterFormNumber();
     }
