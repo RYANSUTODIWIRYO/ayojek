@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "343088287868",
-    "firebase_url": "https://ayojek-g2academy.firebaseio.com",
-    "project_id": "ayojek-g2academy",
-    "storage_bucket": "ayojek-g2academy.appspot.com"
+    "project_number": "475537410787",
+    "firebase_url": "https://comayojek.firebaseio.com",
+    "project_id": "comayojek",
+    "storage_bucket": "comayojek.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:343088287868:android:c87fa0712fd862bd6739f9",
+        "mobilesdk_app_id": "1:475537410787:android:efe7ba29cd6eb426c193d6",
         "android_client_info": {
           "package_name": "com.ayojek"
         }
       },
       "oauth_client": [
         {
-          "client_id": "343088287868-r1src6siea2nubnllt9n1ss61rdca7td.apps.googleusercontent.com",
+          "client_id": "475537410787-0ng8n6aer2jo6nori796nga5ps8tjt81.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ayojek",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "475537410787-9kc41had7eog8jlonqipmbca07dbjk8h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAvJ2dbTv2XSyG0n7rLwk9V55HPNGNnQOg"
+          "current_key": "AIzaSyDHy7ZJzvpGQd-PvO-ROabKSBTC0yA4xP4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "343088287868-r1src6siea2nubnllt9n1ss61rdca7td.apps.googleusercontent.com",
+              "client_id": "475537410787-9kc41had7eog8jlonqipmbca07dbjk8h.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
