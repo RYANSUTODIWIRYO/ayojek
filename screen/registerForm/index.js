@@ -7,18 +7,66 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import firebase from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+
+const usersCollection = firestore().collection('users');
 
 export default class RegisterForm extends Component {
   state = {
     name: '',
     email: '',
     phone: '+62',
+    confirmation: '',
+    code: '',
   };
 
-  // Register
-  //   onPressRegister(){}
+  // Register name,email, phone ==> moving to OTP
+  onPressRegister = async () => {
+    const {name, email, phone} = this.state;
+    console.log('phone:', phone);
 
-  render() {
+    const confirmation = await auth()
+      .signInWithPhoneNumber(phone)
+      .catch((error) => {
+        console.log('Error Login: ', error);
+      });
+
+    console.log('confirmation: ', confirmation);
+    this.setState({
+      confirmation: confirmation,
+    });
+
+    // this.createUserFirestore();
+  };
+
+  // save data in firestore
+  createUserFirestore = () => {
+    firestore()
+      .collection('users')
+      .add({
+        name: name,
+        email: email,
+        contact: phone,
+      })
+      .then(() => {
+        console.log('User added!');
+      });
+  };
+
+  // get&input OTP code ==> will move to home
+  onPressConfirmCode = async () => {
+    const {code, confirmation} = this.state;
+    try {
+      const result = await confirmation.confirm(code);
+      console.log('Result :', result);
+    } catch (error) {
+      console.log('Invalid Code :', error);
+    }
+  };
+
+  RegisterFormNumber = () => {
     return (
       <View style={{padding: 20, backgroundColor: 'white'}}>
         {/* TITLE */}
@@ -82,15 +130,74 @@ export default class RegisterForm extends Component {
               justifyContent: 'flex-end',
               alignItems: 'flex-end',
             }}>
-            <TouchableOpacity
-            // onPress={onPressRegister}
-            >
+            <TouchableOpacity onPress={this.onPressRegister}>
               <Image style={styles.button} source={images.forward} />
             </TouchableOpacity>
           </View>
         </View>
       </View>
     );
+  };
+
+  RegisterFormOTP = () => {
+    return (
+      <View style={{padding: 20, backgroundColor: 'white'}}>
+        {/* TITLE */}
+        <View style={{marginTop: 25}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>
+            Selangkah lagi, nih!
+          </Text>
+          <Text style={{textAlign: 'justify'}}>
+            Kamu tinggal memasukkan kode OTP yang kami SMS ke nomor HP-mu yang
+            terdaftar {this.state.phone}
+          </Text>
+        </View>
+
+        {/* FORM */}
+        <View style={styles.form}>
+          <View style={{marginTop: 25}}>
+            <Text>
+              OTP <Text style={{color: 'red'}}>*</Text>
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignContent: 'center',
+                alignItems: 'center',
+              }}>
+              <View style={{flex: 1}}>
+                <TextInput
+                  style={styles.input}
+                  secureTextEntry={true}
+                  placeholder="●●●●"
+                  keyboardType={'number-pad'}
+                  onChangeText={(code) => this.setState({code})}></TextInput>
+              </View>
+            </View>
+          </View>
+
+          {/* ONPRESS */}
+          <View
+            style={{
+              marginTop: 25,
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+            }}>
+            <TouchableOpacity onPress={this.onPressConfirmCode}>
+              <Image style={styles.button} source={images.forward} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  render() {
+    if (!confirmation) {
+      return this.RegisterFormNumber();
+    }
+    return this.RegisterFormOTP();
   }
 }
 
