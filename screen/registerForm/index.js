@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
@@ -20,50 +21,153 @@ export default class RegisterForm extends Component {
     phone: '+62',
     confirmation: '',
     code: '',
+    uid: '',
   };
 
   // Register name,email, phone ==> moving to OTP
-  onPressRegister = async () => {
-    const {name, email, phone} = this.state;
-    console.log('phone:', phone);
-
-    const confirmation = await auth()
-      .signInWithPhoneNumber(phone)
-      .catch((error) => {
-        console.log('Error Login: ', error);
+  // check whether phone number exist in firestore
+  checkUserFirestore = () => {
+    let user = '';
+    firestore()
+      .collection('users')
+      .where('phone', '==', this.state.phone)
+      .get()
+      .then((querySnapshot) => {
+        // if (querySnapshot.val()) {
+        //   console.log('Phone Number exist');
+        // } else {
+        //   console.warn('Continue');
+        // }
+        // querySnapshot.forEach((documentSnapshot) => {
+        // });
+        querySnapshot.forEach((snapshot) => {
+          user = snapshot.data();
+        });
       });
-
-    console.log('confirmation: ', confirmation);
-    this.setState({
-      confirmation: confirmation,
-    });
-
-    // this.createUserFirestore();
+    console.log('user', user);
   };
 
-  // save data in firestore
+  onPressRegister = async () => {
+    const {name, email, phone} = this.state;
+    console.log(`name: ${name}, email: ${email}, phone: ${phone}`);
+
+    let user = '';
+    await firestore()
+      .collection('users')
+      .where('phone', '==', this.state.phone)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((snapshot) => {
+          user = snapshot.data();
+        });
+      });
+    console.log('user =>', user);
+
+    // if user is not exist, continue to OTP
+    // else go to Login Form
+    if (!user) {
+      // Alert.alert('Success');
+      console.log('phone:', phone);
+
+      const confirmation = await auth()
+        .signInWithPhoneNumber(phone)
+        .catch((error) => {
+          console.log('Error Login: ', error);
+        });
+
+      console.log('confirmation: ', confirmation);
+      this.setState({
+        confirmation: confirmation,
+      });
+    } else {
+      return Alert.alert(null, 'Nomor HP-mu sudah terdaftar.', [
+        {
+          text: 'Masuk',
+          onPress: () => this.props.navigation.navigate('LoginForm'),
+        },
+        {
+          text: 'Kembali',
+        },
+      ]);
+    }
+  };
+
+  // get&input OTP code ==> create firestore ==> will move to home
+  onPressConfirmCode = async () => {
+    let {uid, name, email, phone, code, confirmation} = this.state;
+    // let uid = '';
+
+    console.log('apayaaaa nama uidnya', uid);
+
+    try {
+      const result = await confirmation.confirm(code);
+      // console.log('Result :', result);
+
+      if (!uid) {
+        await auth()
+          .onAuthStateChanged((user) => {
+            if (user) {
+              console.log('get user bedaa: ', user);
+              uid = user.uid;
+              console.warn('UID NYA ===>', uid);
+            }
+          })
+          .catch((error) => {
+            console.error('EROR! =>>>', error);
+          });
+      }
+
+      console.log('kepangggggiiiiill');
+      firestore()
+        .collection('users')
+        .doc(uid)
+        .set({
+          name: name,
+          email: email,
+          phone: phone,
+        })
+        .then(() => {
+          console.log('User added!');
+          this.props.setLogin();
+        });
+    } catch (error) {
+      console.log('Invalid Code :', error);
+    }
+  };
+
+  // Check this.state.confirmation is changed or not
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.confirmation !== prevState.confirmation) {
+      // console.log('masuuuuuuuuuuuukkkkkkkkkkkkkkkkkkkkkk')
+      this.getUser();
+    }
+  }
+
+  // Get user information from firebase
+  getUser = () => {
+    auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log('get user: ', user);
+        this.setState({uid: user.uid});
+        console.info('UID NYA ===>', user.uid);
+      }
+    });
+  };
+
+  // create user to firestore
   createUserFirestore = () => {
+    const {name, email, phone} = this.state;
+
     firestore()
       .collection('users')
       .add({
         name: name,
         email: email,
-        contact: phone,
+        phone: phone,
       })
       .then(() => {
         console.log('User added!');
       });
-  };
-
-  // get&input OTP code ==> will move to home
-  onPressConfirmCode = async () => {
-    const {code, confirmation} = this.state;
-    try {
-      const result = await confirmation.confirm(code);
-      console.log('Result :', result);
-    } catch (error) {
-      console.log('Invalid Code :', error);
-    }
   };
 
   RegisterFormNumber = () => {
@@ -95,6 +199,7 @@ export default class RegisterForm extends Component {
             <TextInput
               style={styles.input}
               placeholder="Cth: name@email.com"
+              keyboardType="email-address"
               value={this.state.email}
               onChangeText={(email) => this.setState({email})}></TextInput>
           </View>
@@ -117,6 +222,7 @@ export default class RegisterForm extends Component {
                 <TextInput
                   style={styles.input}
                   placeholder="12345678"
+                  keyboardType="phone-pad"
                   value={this.state.phone}
                   onChangeText={(phone) => this.setState({phone})}></TextInput>
               </View>
@@ -194,8 +300,8 @@ export default class RegisterForm extends Component {
   };
 
   render() {
-    const { confirmation } = this.state
-    
+    const {confirmation} = this.state;
+
     if (!confirmation) {
       return this.RegisterFormNumber();
     }
