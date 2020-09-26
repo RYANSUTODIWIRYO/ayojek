@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import { connect } from 'react-redux'
+import { setLogin } from "../../store/action"
 
 import {
   StyleSheet,
@@ -12,7 +14,7 @@ import {
   Alert
 } from 'react-native';
 
-export default class LoginForm extends Component {
+class LoginForm extends Component {
   state = {
     phone: "",
     code: "",
@@ -34,7 +36,7 @@ export default class LoginForm extends Component {
                     })
                     .catch(error => console.error("Error firestore :", error))
 
-    console.log("usernya:", user)
+    console.log("onPressLogin user:", user)
 
     // if user is not exist, go to registerForm
     if (!user) {
@@ -70,31 +72,34 @@ export default class LoginForm extends Component {
     const { code, confirmation } = this.state
     try {
       const result = await confirmation.confirm(code)
-      console.log("Result :", result)
+      console.log("Confrimation result :", result)
+      this.props.doLogin()
     } catch (error) {
       console.log("Invalid Code :", error)
-      Alert.alert("Kode OTP invalid")
+      Alert.alert("Kode OTP tidak valid")
     }
   }
 
-  // Check this.state.confirmation is changed or not
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.confirmation !== prevState.confirmation) {
-      // console.log('masuuuuuuuuuuuukkkkkkkkkkkkkkkkkkkkkk')
-      this.getUser()
-    }
-  }
+  // // Check this.state.confirmation is changed or not
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (this.state.confirmation !== prevState.confirmation) {
+  //     // console.log('masuuuuuuuuuuuukkkkkkkkkkkkkkkkkkkkkk')
+  //     this.getUser()
+  //   }
+  // }
 
-  // Get user information from firebase
-  getUser = () =>  {   
-    auth().onAuthStateChanged(user => {
-        if(user) {
-          console.log("get user: ", user)
-          return this.props.setLogin()
-        }
-      }
-    )
-  }
+  // // Get user information from firebase
+  // getUser = () =>  {   
+  //   // If user is logged in, then set Login
+  //   auth().onAuthStateChanged(user => {
+  //       if(user) {
+  //         console.log("get user: ", user)
+  //         // return this.props.setLogin()
+  //         // return this.props.doLogin()
+  //       }
+  //     }
+  //   )
+  // }
 
 
   // Form is showed after user press "masuk"
@@ -199,9 +204,8 @@ export default class LoginForm extends Component {
     )
   }
 
-  
-
   render() {
+    // console.log("LoginForm is rendered")r
     const { confirmation } = this.state
     
     if (!confirmation) {
@@ -244,3 +248,9 @@ const styles = StyleSheet.create({
     width: 38,
   },
 });
+
+const mapDispatchToProps = (dispatch) => ({
+  doLogin: () => dispatch(setLogin())
+})
+
+export default connect(null, mapDispatchToProps)(LoginForm)

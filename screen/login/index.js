@@ -12,7 +12,7 @@ class Login extends Component {
         this.props.navigation.navigate("RegisterForm")
     }
     
-    render() { 
+    render() {        
         return (
             <View style={styles.screen}>
                 <View style={styles.header}>                        
