@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import auth from '@react-native-firebase/auth';
-// import firebase from 'react-native-firebase'
+import React, {Component} from 'react'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 
 import {
   StyleSheet,
@@ -21,15 +21,45 @@ export default class LoginForm extends Component {
 
   // Login with phone number
   onPressLogin = async () => {
-    console.log('phone:', this.state.phone)
+    const { phone } = this.state
+    console.log('phone:', phone)
+    
+    // Find user in firestore
+    let user = ""
+    await firestore().collection("users").where("phone", "==", phone).get()
+                    .then(response => {
+                      response.forEach(res => {
+                        user = res.data()
+                      })
+                    })
+                    .catch(error => console.error("Error firestore :", error))
 
+    console.log("usernya:", user)
+
+    // if user is not exist, go to registerForm
+    if (!user) {
+      return Alert.alert(null, "Nomor kamu belum terdaftar, silakan daftar",
+        [
+          {
+            text: "Daftar",
+            onPress: () => this.props.navigation.navigate("RegisterForm")
+          },
+          {
+            text: "Kembali"
+          }
+        ]
+      )
+    }
+
+    // Log in with phone
     const confirmation = await auth().signInWithPhoneNumber(this.state.phone)
       .catch(error => {
         console.log('Error Login: ', error)
-        Alert.alert("Failed to login")
+        return Alert.alert("Failed to login")
       })
 
     console.log("confirmation: ", confirmation )
+
     this.setState({
       confirmation
     })
@@ -43,6 +73,7 @@ export default class LoginForm extends Component {
       console.log("Result :", result)
     } catch (error) {
       console.log("Invalid Code :", error)
+      Alert.alert("Kode OTP invalid")
     }
   }
 

@@ -48,7 +48,7 @@ export default class RegisterForm extends Component {
       .add({
         name: name,
         email: email,
-        contact: phone,
+        phone: phone,
       })
       .then(() => {
         console.log('User added!');
