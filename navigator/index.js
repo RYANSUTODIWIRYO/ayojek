@@ -1,3 +1,4 @@
 import LoginStack from "./loginStack"
+import HomeTopTab from "./homeTopTab"
 
-export { LoginStack }
+export { LoginStack, HomeTopTab }

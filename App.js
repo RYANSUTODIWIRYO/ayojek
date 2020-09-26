@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { LoginStack } from "./navigator"
+import { LoginStack, HomeTopTab } from "./navigator"
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
 // import auth from '@react-native-firebase/auth';
-import { View, Text, TouchableOpacity } from 'react-native';
+// import { View, Text, TouchableOpacity } from 'react-native';
 import { setLogout } from "./store/action"
 import { connect } from 'react-redux'
 
@@ -11,21 +11,21 @@ const Stack = createStackNavigator()
 
 class App extends Component {
 
-  Home = () => {
-    console.log("Home is rendered")
-    return (
-      <View>
-        <Text>
-          Masuk pak ekooooooooo
-        </Text>                    
-        <TouchableOpacity onPress={this.props.doLogout}>
-          <Text>
-            Sign Out
-          </Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
+  // Home = () => {
+  //   console.log("Home is rendered")
+  //   return (
+  //     <View>
+  //       <Text>
+  //         Masuk pak ekooooooooo
+  //       </Text>                    
+  //       <TouchableOpacity onPress={this.props.doLogout}>
+  //         <Text>
+  //           Sign Out
+  //         </Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   )
+  // }
 
   render() {
     return (
@@ -34,8 +34,11 @@ class App extends Component {
           {
             (this.props.isLogin) ? (
               <Stack.Screen
-                name="Home"
-                component={this.Home}
+                name="HomeTopTab"
+                component={HomeTopTab}
+                options={{
+                  headerShown: false
+                }}
               />
             ) : (
               <Stack.Screen

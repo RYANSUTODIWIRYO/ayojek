@@ -72,35 +72,13 @@ class LoginForm extends Component {
     const { code, confirmation } = this.state
     try {
       const result = await confirmation.confirm(code)
-      console.log("Confrimation result :", result)
+      console.log("Confirmation result :", result)
       this.props.doLogin()
     } catch (error) {
       console.log("Invalid Code :", error)
       Alert.alert("Kode OTP tidak valid")
     }
   }
-
-  // // Check this.state.confirmation is changed or not
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.state.confirmation !== prevState.confirmation) {
-  //     // console.log('masuuuuuuuuuuuukkkkkkkkkkkkkkkkkkkkkk')
-  //     this.getUser()
-  //   }
-  // }
-
-  // // Get user information from firebase
-  // getUser = () =>  {   
-  //   // If user is logged in, then set Login
-  //   auth().onAuthStateChanged(user => {
-  //       if(user) {
-  //         console.log("get user: ", user)
-  //         // return this.props.setLogin()
-  //         // return this.props.doLogin()
-  //       }
-  //     }
-  //   )
-  // }
-
 
   // Form is showed after user press "masuk"
   LoginFormNumber = () => (
@@ -181,7 +159,7 @@ class LoginForm extends Component {
               <TextInput
                 style={styles.input}
                 secureTextEntry={true}
-                placeholder="●●●●"
+                placeholder="●●●●●●"
                 keyboardType={"number-pad"}
                 onChangeText={(code) => this.setState({code})}></TextInput>
             </View>

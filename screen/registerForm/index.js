@@ -6,13 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { connect } from 'react-redux'
+import { setLogin } from "../../store/action"
 
-const usersCollection = firestore().collection('users');
-
-export default class RegisterForm extends Component {
+class RegisterForm extends Component {
   state = {
     name: '',
     email: '',
@@ -22,46 +23,86 @@ export default class RegisterForm extends Component {
   };
 
   // Register name,email, phone ==> moving to OTP
+  // check whether phone number exist in firestore
   onPressRegister = async () => {
     const {name, email, phone} = this.state;
-    console.log('phone:', phone);
+    console.log(`name: ${name}, email: ${email}, phone: ${phone}`);
 
-    const confirmation = await auth()
-      .signInWithPhoneNumber(phone)
-      .catch((error) => {
-        console.log('Error Login: ', error);
-      });
+    if (name === '') {
+      Alert.alert('Silahkan isi Nama-mu!');
+    } else if (email === '') {
+      Alert.alert('Silahkan isi Email-mu!');
+    } else if (phone === '' || phone == '+62') {
+      Alert.alert('Silahkan isi Nomor HP-mu ya');
+    }
 
-    console.log('confirmation: ', confirmation);
-    this.setState({
-      confirmation: confirmation,
-    });
-
-    // this.createUserFirestore();
-  };
-
-  // save data in firestore
-  createUserFirestore = () => {
-    firestore()
+    let user = '';
+    await firestore()
       .collection('users')
-      .add({
-        name: name,
-        email: email,
-        phone: phone,
-      })
-      .then(() => {
-        console.log('User added!');
+      .where('phone', '==', this.state.phone)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((snapshot) => {
+          user = snapshot.data();
+        });
       });
+
+    console.log('user =>', user);
+
+    // if user is not exist, continue to OTP
+    // else go to Login Form
+    if (!user) {
+      // Alert.alert('Success');
+      console.log('phone:', phone);
+
+      const confirmation = await auth()
+        .signInWithPhoneNumber(phone)
+        .catch((error) => {
+          console.log('Error Login: ', error);
+        });
+
+      console.log('confirmation: ', confirmation);
+      this.setState({
+        confirmation: confirmation,
+      });
+    } else {
+      return Alert.alert(null, 'Nomor HP-mu sudah terdaftar.', [
+        {
+          text: 'Masuk',
+          onPress: () => this.props.navigation.navigate('LoginForm'),
+        },
+        {
+          text: 'Kembali',
+        },
+      ]);
+    }
   };
 
-  // get&input OTP code ==> will move to home
+  // get&input OTP code ==> create firestore ==> will move to home
   onPressConfirmCode = async () => {
-    const {code, confirmation} = this.state;
+    const { name, email, phone, code, confirmation} = this.state;
+
     try {
+      // Confirm the OTP code
       const result = await confirmation.confirm(code);
-      console.log('Result :', result);
+      console.log('Confirmation Result :', result);
+
+      // Add user to firestore
+      firestore()
+        .collection('users')
+        .doc(result.user.uid)
+        .set({
+          name: name,
+          email: email,
+          phone: phone,
+        })
+        .then(() => {
+          console.log('User added!');
+          this.props.doLogin()
+        });
     } catch (error) {
-      console.log('Invalid Code :', error);
+      console.log('Invalid Code :', error)
+      Alert.alert("Kode OTP tidak valid")
     }
   };
 
@@ -94,6 +135,7 @@ export default class RegisterForm extends Component {
             <TextInput
               style={styles.input}
               placeholder="Cth: name@email.com"
+              keyboardType="email-address"
               value={this.state.email}
               onChangeText={(email) => this.setState({email})}></TextInput>
           </View>
@@ -116,6 +158,7 @@ export default class RegisterForm extends Component {
                 <TextInput
                   style={styles.input}
                   placeholder="12345678"
+                  keyboardType="phone-pad"
                   value={this.state.phone}
                   onChangeText={(phone) => this.setState({phone})}></TextInput>
               </View>
@@ -193,8 +236,8 @@ export default class RegisterForm extends Component {
   };
 
   render() {
-    const { confirmation } = this.state
-    
+    const {confirmation} = this.state;
+
     if (!confirmation) {
       return this.RegisterFormNumber();
     }
@@ -231,3 +274,9 @@ const styles = StyleSheet.create({
     width: 38,
   },
 });
+
+const mapDispatchToProps = (dispatch) => ({
+  doLogin: () => dispatch(setLogin())
+})
+
+export default connect(null, mapDispatchToProps)(RegisterForm)
