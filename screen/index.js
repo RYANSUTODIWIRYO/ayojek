@@ -1,8 +1,9 @@
-import Login from "./login"
-import LoginForm from "./loginForm"
-import RegisterForm from "./registerForm"
-import Home from "./home"
-import Chat from "./chat"
-import Promo from "./promo"
+import Login from './login';
+import LoginForm from './loginForm';
+import RegisterForm from './registerForm';
+import Home from './home';
+import Chat from './chat';
+import Promo from './promo';
+import Detail from './detail';
 
-export { Login, LoginForm, RegisterForm, Home, Promo, Chat }
+export {Login, LoginForm, RegisterForm, Home, Promo, Chat, Detail};
