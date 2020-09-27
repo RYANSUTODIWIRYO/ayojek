@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Image} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {Home, Promo, Chat, Detail} from '../../screen';
+import {Home, Promo, Chat} from '../../screen';
 
 const Tab = createMaterialTopTabNavigator();
 
