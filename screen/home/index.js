@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Alert
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 
@@ -95,29 +96,33 @@ class Home extends Component {
               }}
             /> */}
               <View style={styles.featureSubContent}>
+
                 <View style={{flex: 1, alignItems: 'center'}}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("Map")}>
                     <Image source={images.goride} style={styles.featureImage} />
+                    <Text>GoRide</Text>
                   </TouchableOpacity>
-                  <Text>GoRide</Text>
                 </View>
+                
                 <View style={{flex: 1, alignItems: 'center'}}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("Map")}>
                     <Image source={images.gocar} style={styles.featureImage} />
+                    <Text>GoCar</Text>
                   </TouchableOpacity>
-                  <Text>GoCar</Text>
                 </View>
+                
                 <View style={{flex: 1, alignItems: 'center'}}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => Alert.alert("Incoming features..")}>
                     <Image source={images.gofood} style={styles.featureImage} />
+                    <Text>GoFood</Text>
                   </TouchableOpacity>
-                  <Text>GoFood</Text>
                 </View>
+                
                 <View style={{flex: 1, alignItems: 'center'}}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => Alert.alert("Incoming features..")}>
                     <Image source={images.goshop} style={styles.featureImage} />
+                    <Text>GoShop</Text>
                   </TouchableOpacity>
-                  <Text>GoShop</Text>
                 </View>
               </View>
             </View>

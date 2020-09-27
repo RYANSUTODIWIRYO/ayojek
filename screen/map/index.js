@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
-import { LogBox, View, Text, StyleSheet, Image, Alert, PermissionsAndroid } from 'react-native'
+import { LogBox, View, Text, StyleSheet, Image, Alert, PermissionsAndroid, TouchableOpacity } from 'react-native'
 import MapView, { Marker, Polyline } from "react-native-maps"
 // import polyline from '@mapbox/polyline'
 import Geolocation from '@react-native-community/geolocation'
+import Location from '../location/index';
+import Detail from '../detail/index';
 
-LogBox.ignoreLogs([
-  'Require cycle'
-])
+LogBox.ignoreLogs(['Require cycle']);
 
 class Map extends Component {
     state = {
         region: {
-            latitude: -6.175634,
-            longitude: 106.827171,
+            // latitude: -6.175634,
+            // longitude: 106.827171,
+            latitude: -6.2666843,
+            longitude: 106.5514934,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           },
@@ -37,10 +39,35 @@ class Map extends Component {
                 //     description: "This is My Destination"
                 // },
         // coords: [],
+        centerMarker: false,
+        userMarker: false,
+        onFocused: ""
+    }
+
+    setValue = (key, val, onFocused) => {
+        this.setState({
+            [key]: val,
+            onFocused
+        })
+    }
+
+    setMarker = () => {
+        const { onFocused, region } = this.state
+        console.log("inilohhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+        this.setState({
+            [onFocused]: {
+                coordinate: {
+                    latitude: region.latitude,
+                    longitude: region.longitude
+                },
+                // title: marker === "startMarker" ? "Lokasi Jemput" : "Lokasi Tujuan" 
+            },
+            centerMarker: false
+        })
     }
 
     onRegionChangeHandler = (region) => {
-        console.log('changed')
+        // console.log('changed')
         this.setState({region})
     }
 
@@ -146,86 +173,111 @@ class Map extends Component {
 
 
     render() {
-        // console.log("Region :", this.state.region)
-        const { region, userRegion, startMarker, destinationMarker, /*coords*/ } = this.state 
+        const { region, userRegion, startMarker, destinationMarker, centerMarker, userMarker, onFocused /*coords*/ } = this.state 
+        // console.log("Region :", region)
+        // console.log('start marker :', startMarker)
+        // console.log('dest marker :', destinationMarker)
+        // console.log('on focus :', onFocused)
         return (
-            <MapView
-                style={{
-                    ...StyleSheet.absoluteFillObject
-                }}
-                ref={ref => (this.mapView = ref)}
-                initialRegion={region}
-                onRegionChange={this.onRegionChangeHandler}
-                // onMapReady={this.onMapReadyHandler}
-            >
-                
-                {/* Center marker */}
-                <Marker
-                    title="Tengah"
-                    coordinate={{latitude: region.latitude, longitude: region.longitude}}
-                    description="Ini Tengah"
-                    style={styles.marker}
-                >
-                    <Image source={images.pin} style={{width:30, height:30}}/>
-                </Marker>
-
-                {/* User marker */}
-                {/* <Marker
-                    title="Your Location"
-                    coordinate={{latitude: userRegion.latitude, longitude: userRegion.longitude}}
-                    description="This is your location"
-                    style={styles.marker}
-                >
-                    <Text>You are here</Text>
-                    <Image source={images.pin} style={{width:30, height:30}}/>
-                </Marker> */}
-
-                {/* Starting point marker */}
-                { startMarker ? 
-                    <Marker
-                        title={startMarker.title}
-                        coordinate={startMarker.coordinate}
-                        description={startMarker.description}
-                        style={styles.marker}
+            <View style={{flex: 1}}>
+                <View style={{flex: 0.73}}>
+                    <MapView
+                        style={{
+                            ...StyleSheet.absoluteFillObject
+                        }}
+                        ref={ref => (this.mapView = ref)}
+                        initialRegion={region}
+                        onRegionChange={this.onRegionChangeHandler}
+                        // onMapReady={this.onMapReadyHandler}
                     >
-                        <Text style={styles.markerText}>
-                            {startMarker.title}
-                        </Text>
-                        <Image source={images.pin} style={{width:30, height:30}}/>
-                    </Marker>
-                    : null
-                }
+                        
+                        {/* Center marker */}
+                        { centerMarker ? 
+                            <Marker
+                                // title="Tengah"
+                                coordinate={{latitude: region.latitude, longitude: region.longitude}}
+                                // description="Ini Tengah"
+                                style={styles.marker}
+                                onPress={this.setMarker}
+                                >
+                                <Text style={{backgroundColor: "green", color: "white", borderRadius: 5, marginBottom: 5, padding: 5}}>Pilih Lokasi</Text>
+                                <Image source={images.pin} style={{width:30, height:30}}/>
+                            </Marker> :
+                            null
+                        }
 
-                {/* Destination point marker */}
-                { destinationMarker ?
-                    <Marker
-                        title={destinationMarker.title}
-                        coordinate={destinationMarker.coordinate}
-                        description={destinationMarker.description}
-                        style={styles.marker}
-                    >
-                        <Text style={styles.markerTextDestination}>
-                            {destinationMarker.title}
-                        </Text>
-                        <Image source={images.pin} style={{width:30, height:30}}/>
-                    </Marker>
-                    : null
-                }
+                        {/* User marker */}
+
+                        { userMarker ? 
+                            <Marker
+                                title="Your Location"
+                                coordinate={{latitude: userRegion.latitude, longitude: userRegion.longitude}}
+                                description="This is your location"
+                                style={styles.marker}
+                            >
+                                <Text>You are here</Text>
+                                <Image source={images.pin} style={{width:30, height:30}}/>
+                            </Marker> :
+                            null
+                        }
+
+                        {/* Starting point marker */}
+                        { startMarker ? 
+                            <Marker
+                                // title={startMarker.title}
+                                coordinate={startMarker.coordinate}
+                                // description={startMarker.description}
+                                style={styles.marker}
+                            >
+                                <Text style={styles.markerText}>
+                                    Lokasi Jemput
+                                </Text>
+                                <Image source={images.pin} style={{width:30, height:30}}/>
+                            </Marker>
+                            : null
+                        }
+
+                        {/* Destination point marker */}
+                        { destinationMarker ?
+                            <Marker
+                                // title={destinationMarker.title}
+                                coordinate={destinationMarker.coordinate}
+                                // description={destinationMarker.description}
+                                style={styles.marker}
+                                onPress={this.setMarker}
+                            >
+                                <Text style={styles.markerTextDestination}>
+                                    Lokasi Tujuan
+                                </Text>
+                                <Image source={images.pin} style={{width:30, height:30}}/>
+                            </Marker>
+                            : null
+                        }
 
 
-                {/* {
-                    coords ?  */}
-                        {/* <Polyline
-                            coordinates={[
-                                { latitude: -6.2666843, longitude: 106.5514934 },
-                                { latitude: -6.267337, longitude: 106.557169 }                            
-                            ]}
-                            strokeColor="green"
-                            strokeWidth={4}
-                        /> */}
-                        {/* : null
-                } */}
-            </MapView>
+                        {startMarker && destinationMarker ?
+                            <Polyline
+                                coordinates={[
+                                    { latitude: startMarker.coordinate.latitude, longitude: startMarker.coordinate.longitude },
+                                    { latitude: destinationMarker.coordinate.latitude, longitude: destinationMarker.coordinate.longitude }                            
+                                ]}
+                                strokeColor="green"
+                                strokeWidth={4}
+                            /> :
+                            null
+                        }
+                    </MapView>
+                </View>
+                <View style={{flex: 0.27}}>
+                    {
+                        startMarker && destinationMarker ? 
+                        <Detail /> :
+                        <Location
+                            setValue={this.setValue}
+                        />
+                    }
+                </View>
+            </View>            
         )
     }
 }
@@ -241,4 +293,3 @@ const styles = StyleSheet.create({
 })
 
 export default Map;
-

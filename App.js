@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { LoginStack, HomeTopTab } from "./navigator"
+import { Map } from "./screen"
 import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
 // import auth from '@react-native-firebase/auth';
@@ -35,7 +36,11 @@ class App extends Component {
             (this.props.isLogin) ? (
               <Stack.Screen
                 name="HomeTopTab"
-                component={HomeTopTab}
+                children={props =>{
+                  return (
+                      <HomeTopTab {...props}/>)
+                  }
+                }
                 options={{
                   headerShown: false
                 }}
@@ -54,6 +59,14 @@ class App extends Component {
               />
             )
           }
+          <Stack.Screen
+            name="Map"
+            children={props =>{
+              return (
+                  <Map {...props}/>)
+              }
+            }
+          />
         </Stack.Navigator>
       </NavigationContainer>
     )
