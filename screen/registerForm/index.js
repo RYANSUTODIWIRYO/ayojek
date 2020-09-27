@@ -58,8 +58,8 @@ class RegisterForm extends Component {
       const confirmation = await auth()
         .signInWithPhoneNumber(phone, true)
         .catch((error) => {
-          console.log('Error Login :', error);
-          Alert.alert("Error Login :", error.toString())
+          console.log('Error Register :', error);
+          Alert.alert("Error Register :", error.toString())
         });
 
       console.log('confirmation: ', confirmation);

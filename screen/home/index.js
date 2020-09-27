@@ -240,12 +240,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#fff',
+    justifyContent: "center",
+    height: 40
   },
 
   TextStyle: {
-    height: 30,
+    // height: 30,
     color: '#fff',
     textAlign: 'center',
+    fontWeight: "bold"
   },
 });
 
