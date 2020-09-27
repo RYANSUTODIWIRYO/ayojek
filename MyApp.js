@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import App from "./App"
+import { Map } from "./screen"
 
 import { Provider } from "react-redux"
 import { store, persistor } from "./store"
@@ -10,7 +11,8 @@ class MyApp extends Component {
         return (
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>                    
-                    <App/>
+                    {/* <App/> */}
+                    <Map/>
                 </PersistGate>
             </Provider>
         )

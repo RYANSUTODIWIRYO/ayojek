@@ -56,9 +56,10 @@ class RegisterForm extends Component {
       console.log('phone:', phone);
 
       const confirmation = await auth()
-        .signInWithPhoneNumber(phone)
+        .signInWithPhoneNumber(phone, true)
         .catch((error) => {
-          console.log('Error Login: ', error);
+          console.log('Error Login :', error);
+          Alert.alert("Error Login :", error.toString())
         });
 
       console.log('confirmation: ', confirmation);
@@ -82,6 +83,10 @@ class RegisterForm extends Component {
   onPressConfirmCode = async () => {
     const { name, email, phone, code, confirmation} = this.state;
 
+    if(!code) {
+      return Alert.alert("Kode OTP tidak boleh kosong")
+    }
+
     try {
       // Confirm the OTP code
       const result = await confirmation.confirm(code);
@@ -102,7 +107,7 @@ class RegisterForm extends Component {
         });
     } catch (error) {
       console.log('Invalid Code :', error)
-      Alert.alert("Kode OTP tidak valid")
+      Alert.alert("Kode OTP tidak valid :", error.toString())
     }
   };
 
@@ -212,7 +217,7 @@ class RegisterForm extends Component {
                 <TextInput
                   style={styles.input}
                   secureTextEntry={true}
-                  placeholder="●●●●"
+                  placeholder="●●●●●●"
                   keyboardType={'number-pad'}
                   onChangeText={(code) => this.setState({code})}></TextInput>
               </View>
